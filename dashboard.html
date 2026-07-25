@@ -3,22 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Trang chủ</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="dashboard-container">
         <header class="dashboard-header">
-            <h1>📊 Dashboard</h1>
-            <div class="user-info">
-                <span id="userDisplay"></span>
-                <button id="logoutBtn" class="btn-logout">Đăng xuất</button>
+            <!-- Avatar + Tên bên trái -->
+            <div class="header-left">
+                <div class="avatar-wrapper" id="avatarBtn">
+                    <img id="avatarImage" src="" alt="Avatar" class="avatar-circle">
+                </div>
+                <span id="userDisplay" class="user-name-header"></span>
             </div>
+
+            <!-- Đăng xuất bên phải -->
+            <button id="logoutBtn" class="btn-logout">Đăng xuất</button>
         </header>
 
         <main class="dashboard-content">
             <div class="welcome-box">
-                <h2 id="welcomeMessage">Chào mừng bạn!</h2>
+                <h2 id="welcomeMessage">Chào mừng bạn trở lại!</h2>
                 <p id="roleMessage"></p>
             </div>
 

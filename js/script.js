@@ -1,96 +1,239 @@
-// ===== MENU MOBILE =====
+// ===== ĐỊNH NGHĨA TÀI KHOẢN MẶC ĐỊNH =====
+const DEFAULT_USERS = {
+    'owner': {
+        username: 'owner',
+        password: 'owner123',
+        role: 'owner',
+        fullName: 'Chủ sở hữu'
+    },
+    'admin': {
+        username: 'admin',
+        password: 'admin123',
+        role: 'admin',
+        fullName: 'Quản trị viên'
+    },
+    'user': {
+        username: 'user',
+        password: 'user123',
+        role: 'user',
+        fullName: 'Người dùng'
+    }
+};
+
+// ===== KHỞI TẠO DỮ LIỆU =====
+function initializeUsers() {
+    let users = localStorage.getItem('users');
+    
+    if (!users) {
+        localStorage.setItem('users', JSON.stringify(DEFAULT_USERS));
+        console.log('✅ Đã tạo tài khoản mặc định');
+    }
+}
+
+initializeUsers();
+
+// ===== LẤY DANH SÁCH USERS =====
+function getUsers() {
+    const users = localStorage.getItem('users');
+    return users ? JSON.parse(users) : {};
+}
+
+// ===== LƯU DANH SÁCH USERS =====
+function saveUsers(users) {
+    localStorage.setItem('users', JSON.stringify(users));
+}
+
+// ===== XỬ LÝ ĐĂNG NHẬP =====
 document.addEventListener('DOMContentLoaded', function() {
-    const hamburger = document.querySelector('.hamburger');
-    const navMenu = document.querySelector('.nav-menu');
-
-    if (hamburger) {
-        hamburger.addEventListener('click', function() {
-            navMenu.classList.toggle('active');
-        });
+    const currentUser = sessionStorage.getItem('currentUser');
+    if (currentUser && window.location.pathname.includes('index.html')) {
+        window.location.href = 'dashboard.html';
     }
 
-    // ===== FORM HANDLING =====
-    const contactForm = document.getElementById('contactForm');
-    const formMessage = document.getElementById('formMessage');
-
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
+    // ===== FORM ĐĂNG NHẬP =====
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Lấy dữ liệu form
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
-
-            // Hiển thị thông báo
-            formMessage.innerHTML = `
-                <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 5px; margin-top: 20px;">
-                    <strong>✅ Gửi thành công!</strong><br>
-                    Họ tên: ${name}<br>
-                    Email: ${email}<br>
-                    Tin nhắn: ${message}
-                </div>
-            `;
-
-            // Reset form
-            contactForm.reset();
-
-            // Tự động ẩn sau 5 giây
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const messageDiv = document.getElementById('message');
+            
+            if (!username || !password) {
+                showMessage(messageDiv, 'Vui lòng nhập đầy đủ thông tin!', 'error');
+                return;
+            }
+            
+            const users = getUsers();
+            const user = users[username];
+            
+            if (!user) {
+                showMessage(messageDiv, '❌ Tên đăng nhập không tồn tại!', 'error');
+                return;
+            }
+            
+            if (user.password !== password) {
+                showMessage(messageDiv, '❌ Mật khẩu không chính xác!', 'error');
+                return;
+            }
+            
+            showMessage(messageDiv, '✅ Đăng nhập thành công!', 'success');
+            
+            sessionStorage.setItem('currentUser', JSON.stringify({
+                username: user.username,
+                role: user.role,
+                fullName: user.fullName
+            }));
+            
             setTimeout(() => {
-                formMessage.innerHTML = '';
-            }, 5000);
+                window.location.href = 'dashboard.html';
+            }, 1000);
         });
     }
 
-    // ===== DEMO BUTTON =====
-    const demoBtn = document.getElementById('demoBtn');
-    if (demoBtn) {
-        demoBtn.addEventListener('click', function() {
-            alert('🎉 Chào mừng bạn đến với web của tôi!');
-        });
-    }
-
-    // ===== SCROLL ANIMATION (smooth scroll) =====
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
+    // ===== FORM ĐĂNG KÝ (ĐÃ SỬA - BỎ CHỌN VAI TRÒ) =====
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+        registerForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-                
-                // Đóng menu mobile nếu đang mở
-                if (navMenu.classList.contains('active')) {
-                    navMenu.classList.remove('active');
-                }
-            }
-        });
-    });
-
-    // ===== ACTIVE NAV LINK =====
-    const sections = document.querySelectorAll('section');
-    const navLinks = document.querySelectorAll('.nav-menu a');
-
-    window.addEventListener('scroll', () => {
-        let current = '';
-        
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
+            const username = document.getElementById('regUsername').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+            const confirmPassword = document.getElementById('regConfirmPassword').value.trim();
+            const messageDiv = document.getElementById('message');
             
-            if (pageYOffset >= sectionTop - 150) {
-                current = section.getAttribute('id');
+            // Validate
+            if (!username || !password || !confirmPassword) {
+                showMessage(messageDiv, 'Vui lòng nhập đầy đủ thông tin!', 'error');
+                return;
             }
+            
+            if (username.length < 3) {
+                showMessage(messageDiv, 'Tên đăng nhập phải có ít nhất 3 ký tự!', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showMessage(messageDiv, 'Mật khẩu phải có ít nhất 6 ký tự!', 'error');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showMessage(messageDiv, '❌ Mật khẩu xác nhận không khớp!', 'error');
+                return;
+            }
+            
+            // Kiểm tra username đã tồn tại
+            const users = getUsers();
+            if (users[username]) {
+                showMessage(messageDiv, '❌ Tên đăng nhập đã tồn tại!', 'error');
+                return;
+            }
+            
+            // Tạo tài khoản mới - MẶC ĐỊNH LÀ USER
+            users[username] = {
+                username: username,
+                password: password,
+                role: 'user',  // 🟢 LUÔN LÀ USER
+                fullName: username
+            };
+            
+            saveUsers(users);
+            
+            showMessage(
+                messageDiv, 
+                `✅ Đăng ký thành công!<br>Bạn đã tạo tài khoản với vai trò: Người dùng (User)<br>Hãy đăng nhập ngay!`, 
+                'success'
+            );
+            
+            registerForm.reset();
+            
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 3000);
         });
+    }
 
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-            if (link.getAttribute('href') === `#${current}`) {
-                link.classList.add('active');
-            }
+    // ===== DASHBOARD =====
+    if (window.location.pathname.includes('dashboard.html')) {
+        const currentUserData = sessionStorage.getItem('currentUser');
+        
+        if (!currentUserData) {
+            window.location.href = 'index.html';
+            return;
+        }
+        
+        const user = JSON.parse(currentUserData);
+        const users = getUsers();
+        
+        document.getElementById('userDisplay').textContent = `👤 ${user.fullName} (${user.role})`;
+        document.getElementById('welcomeMessage').textContent = `Chào mừng ${user.fullName} trở lại!`;
+        
+        const roleMessages = {
+            'owner': 'Bạn có quyền cao nhất trong hệ thống. Hãy quản lý mọi thứ một cách khôn ngoan! 👑',
+            'admin': 'Bạn có quyền quản trị hệ thống. Hãy kiểm duyệt và quản lý người dùng! ⚙️',
+            'user': 'Bạn đang ở khu vực người dùng. Khám phá các tính năng dành cho bạn! 👤'
+        };
+        document.getElementById('roleMessage').textContent = roleMessages[user.role] || '';
+        
+        document.getElementById('userContent').style.display = 'block';
+        
+        if (user.role === 'admin' || user.role === 'owner') {
+            document.getElementById('adminContent').style.display = 'block';
+            document.getElementById('userListSection').style.display = 'block';
+            renderUserList(users);
+        }
+        
+        if (user.role === 'owner') {
+            document.getElementById('ownerContent').style.display = 'block';
+        }
+        
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            sessionStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
         });
-    });
+    }
 });
+
+// ===== HIỂN THỊ DANH SÁCH USER =====
+function renderUserList(users) {
+    const userListDiv = document.getElementById('userList');
+    if (!userListDiv) return;
+    
+    userListDiv.innerHTML = '';
+    
+    Object.keys(users).forEach(key => {
+        const user = users[key];
+        const userItem = document.createElement('div');
+        userItem.className = 'user-item';
+        
+        const roleLabels = {
+            'owner': '👑 Owner',
+            'admin': '⚙️ Admin',
+            'user': '👤 User'
+        };
+        
+        userItem.innerHTML = `
+            <span><strong>${user.username}</strong></span>
+            <span class="role-badge ${user.role}">${roleLabels[user.role] || user.role}</span>
+        `;
+        
+        userListDiv.appendChild(userItem);
+    });
+}
+
+// ===== HIỂN THỊ THÔNG BÁO =====
+function showMessage(element, message, type) {
+    if (!element) return;
+    
+    element.innerHTML = message;
+    element.className = `message ${type}`;
+    element.style.display = 'block';
+    
+    if (type !== 'success' || !message.includes('Đăng ký thành công')) {
+        setTimeout(() => {
+            element.style.display = 'none';
+        }, 5000);
+    }
+}

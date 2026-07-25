@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ sơ cá nhân</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="profile-container">
+        <div class="profile-box">
+            <!-- Nút quay lại -->
+            <div class="profile-back">
+                <a href="dashboard.html" class="btn-back">← Quay lại</a>
+            </div>
+
+            <!-- Avatar lớn -->
+            <div class="profile-avatar-section">
+                <div class="profile-avatar-wrapper">
+                    <img id="profileAvatar" src="" alt="Avatar" class="profile-avatar-large">
+                    <button id="changeAvatarBtn" class="btn-change-avatar">📷 Thay ảnh</button>
+                    <input type="file" id="avatarInput" accept="image/*" style="display:none;">
+                </div>
+            </div>
+
+            <!-- Thông tin -->
+            <div class="profile-info">
+                <h2 id="profileName">Tên người dùng</h2>
+                <p id="profileRole" class="profile-role"></p>
+                
+                <div class="profile-bio-section">
+                    <label for="profileBio">Tiểu sử</label>
+                    <textarea id="profileBio" maxlength="180" placeholder="Viết tiểu sử của bạn (tối đa 180 ký tự)"></textarea>
+                    <div class="bio-counter">
+                        <span id="bioCount">0</span>/180
+                    </div>
+                    <button id="saveBioBtn" class="btn-save-bio">💾 Lưu tiểu sử</button>
+                </div>
+            </div>
+
+            <div id="profileMessage" class="message"></div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

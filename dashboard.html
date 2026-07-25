@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>📊 Dashboard</h1>
+            <div class="user-info">
+                <span id="userDisplay"></span>
+                <button id="logoutBtn" class="btn-logout">Đăng xuất</button>
+            </div>
+        </header>
+
+        <main class="dashboard-content">
+            <div class="welcome-box">
+                <h2 id="welcomeMessage">Chào mừng bạn!</h2>
+                <p id="roleMessage"></p>
+            </div>
+
+            <!-- Nội dung theo role -->
+            <div class="role-content">
+                <div id="userContent" class="content-section">
+                    <h3>👤 Khu vực Người dùng</h3>
+                    <p>Đây là nội dung dành cho User</p>
+                    <ul>
+                        <li>Xem thông tin cá nhân</li>
+                        <li>Cập nhật hồ sơ</li>
+                        <li>Xem bài viết</li>
+                    </ul>
+                </div>
+
+                <div id="adminContent" class="content-section" style="display:none;">
+                    <h3>⚙️ Khu vực Quản trị viên</h3>
+                    <p>Đây là nội dung dành cho Admin</p>
+                    <ul>
+                        <li>Quản lý người dùng</li>
+                        <li>Quản lý bài viết</li>
+                        <li>Thống kê hệ thống</li>
+                        <li>Cài đặt hệ thống</li>
+                    </ul>
+                </div>
+
+                <div id="ownerContent" class="content-section" style="display:none;">
+                    <h3>👑 Khu vực Chủ sở hữu</h3>
+                    <p>Đây là nội dung dành cho Owner</p>
+                    <ul>
+                        <li>Quản lý toàn bộ hệ thống</li>
+                        <li>Quản lý Admin và User</li>
+                        <li>Báo cáo tổng hợp</li>
+                        <li>Cấu hình hệ thống</li>
+                        <li>Phân quyền người dùng</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Danh sách user (chỉ Owner và Admin mới thấy) -->
+            <div id="userListSection" class="user-list-section" style="display:none;">
+                <h3>📋 Danh sách người dùng</h3>
+                <div id="userList"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
